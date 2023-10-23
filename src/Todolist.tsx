@@ -1,11 +1,14 @@
+import { TaskFilterValueType } from "./App"
 import { TasksList } from "./TasksList"
 
 type TodolistPropsType = {
     tasks: TaskType[]
     title: string
+    removeTask: (taskId: number) => void
+    setFilter: (value: TaskFilterValueType) => void
 }
 
-type TaskType = {
+export type TaskType = {
     id: number
     title: string
     isDone: boolean
@@ -19,11 +22,13 @@ export const Todolist = (props: TodolistPropsType) => {
                 <input/>
                 <button>+</button>
             </div>
-            <TasksList tasks={props.tasks} />            
+            <TasksList tasks={props.tasks} 
+                removeTask={props.removeTask}
+            />            
             <div>
-                <button>All</button>
-                <button>Active</button>
-                <button>Completed</button>
+                <button onClick={() => props.setFilter('all')}>All</button>
+                <button onClick={() => props.setFilter('active')}>Active</button>
+                <button onClick={() => props.setFilter('completed')}>Completed</button>
             </div>
         </div>
     )

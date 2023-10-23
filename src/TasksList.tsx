@@ -1,20 +1,25 @@
+import { TaskType } from "./Todolist"
+
 type TasksListPropsType = {
     tasks: TaskType[]
+    removeTask: (taskId: number) => void
 }
 
-type TaskType = {
-    id: number
-    title: string
-    isDone: boolean
-}
 
 export const TasksList = (props:TasksListPropsType) => {
     
     return (
         <ul>
             {props.tasks.map((task) => {
+                const onClickRemoveTaskHandler = (id:number) => {
+                    props.removeTask(id)
+                }
                 return (
-                    <li key={task.id}><input type="checkbox" checked={task.isDone}/><span>{task.title}</span></li>
+                    <li key={task.id}>
+                        <input type="checkbox" checked={task.isDone}/>
+                        <span>{task.title}</span>
+                        <button onClick={() => onClickRemoveTaskHandler(task.id)}>✖️</button>
+                    </li>
                 )
             })}
         </ul>
