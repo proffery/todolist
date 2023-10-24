@@ -2,7 +2,7 @@ import { TaskType } from "./Todolist"
 
 type TasksListPropsType = {
     tasks: TaskType[]
-    removeTask: (taskId: number) => void
+    removeTask: (taskId: string) => void
 }
 
 
@@ -11,7 +11,7 @@ export const TasksList = (props:TasksListPropsType) => {
     return (
         <ul>
             {props.tasks.map((task) => {
-                const onClickRemoveTaskHandler = (id:number) => {
+                const onClickRemoveTaskHandler = (id:string) => {
                     props.removeTask(id)
                 }
                 return (
