@@ -2,9 +2,10 @@ import { ChangeEvent } from "react"
 import { TaskType } from "./Todolist"
 
 type TasksListPropsType = {
+    todoListID: string
     tasks: TaskType[]
-    removeTask: (taskId: string) => void
-    changeStatus: (taskId: string, newStatus: boolean) => void
+    removeTask: (todoListID: string, taskId: string) => void
+    changeStatus: (todoListID: string, taskID: string, newStatus: boolean) => void
 }
 
 
@@ -15,10 +16,10 @@ export const TasksList = (props: TasksListPropsType) => {
             <ul>
                 {props.tasks.map((task) => {
                     const onClickRemoveTaskHandler = () => {
-                        props.removeTask(task.id)
+                        props.removeTask(props.todoListID, task.id)
                     }
                     const onChangeTaskStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
-                        props.changeStatus(task.id, e.currentTarget.checked)
+                        props.changeStatus(props.todoListID, task.id, e.currentTarget.checked)
                     }
                     const taskClass = task.isDone ? "task-is-done" : "task"
                     return (

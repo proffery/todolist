@@ -3,13 +3,15 @@ import { TaskFilterValueType } from "./App"
 import { TasksList } from "./TasksList"
 
 type TodolistPropsType = {
+    todoListID: string
     tasks: TaskType[]
     title: string
     filter: TaskFilterValueType
-    removeTask: (taskId: string) => void
-    addTask: (taskTitle: string) => void
-    setFilter: (value: TaskFilterValueType) => void
-    changeStatus: (taskID: string, newStatus: boolean) => void
+    removeTask: (todoListID: string, taskID: string) => void
+    addTask: (todoListID: string, taskTitle: string) => void
+    setFilter: (todoListID: string, value: TaskFilterValueType) => void
+    changeStatus: (todoListID: string, taskID: string, newStatus: boolean) => void
+    removeTodoList: (todoListID: string) => void
 }
 
 export type TaskType = {
@@ -33,7 +35,7 @@ export const Todolist = (props: TodolistPropsType) => {
         }
     }
     const addTaskHandler = () => {
-        props.addTask(title)
+        props.addTask(props.todoListID, title)
         setTitle('')
     }
 
@@ -44,15 +46,19 @@ export const Todolist = (props: TodolistPropsType) => {
     }
 
     const onAllClickHandler = () => {
-        props.setFilter('all')
+        props.setFilter(props.todoListID, 'all')
     }
 
     const onActiveClickHandler = () => {
-        props.setFilter('active')
+        props.setFilter(props.todoListID, 'active')
     }
 
     const onCompletedClickHandler = () => {
-        props.setFilter('completed')
+        props.setFilter(props.todoListID, 'completed')
+    }
+
+    const todoListRemoveHandler = () => {
+        props.removeTodoList(props.todoListID)
     }
 
     const usrMsgLengthTitle: boolean | JSX.Element = title.length > 15 && <p className="error">Your title too long!</p>
@@ -61,7 +67,7 @@ export const Todolist = (props: TodolistPropsType) => {
 
     return (
         <div>
-            <h3>{props.title}</h3>
+            <h3>{props.title}<button onClick={todoListRemoveHandler}>✖️</button></h3>
             <div>
                 <input
                     value={title.trim()}
@@ -79,6 +85,7 @@ export const Todolist = (props: TodolistPropsType) => {
             </div>
             <TasksList
                 tasks={props.tasks}
+                todoListID={props.todoListID}
                 removeTask={props.removeTask}
                 changeStatus={props.changeStatus}
             />
