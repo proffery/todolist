@@ -1,4 +1,4 @@
-import { ChangeEvent, KeyboardEvent, useState } from "react"
+import { AddItemForm } from "./AddItemForm"
 import { TaskFilterValueType } from "./App"
 import { TasksList } from "./TasksList"
 
@@ -21,29 +21,6 @@ export type TaskType = {
 }
 
 export const Todolist = (props: TodolistPropsType) => {
-    const [title, setTitle] = useState<string>('')
-    const [error, setError] = useState<boolean>(false)
- 
-    const inputOnChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        error && setError(false)
-        if (e.target.value.trimStart()) {
-            setTitle(e.currentTarget.value)
-        }
-        else {
-            setError(true)
-            setTitle('')
-        }
-    }
-    const addTaskHandler = () => {
-        props.addTask(props.todoListID, title)
-        setTitle('')
-    }
-
-    const addTaskOnEnterHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter' && !isAddButtonDisabled) {
-            addTaskHandler()
-        }
-    }
 
     const onAllClickHandler = () => {
         props.setFilter(props.todoListID, 'all')
@@ -61,28 +38,14 @@ export const Todolist = (props: TodolistPropsType) => {
         props.removeTodoList(props.todoListID)
     }
 
-    const usrMsgLengthTitle: boolean | JSX.Element = title.length > 15 && <p className="error">Your title too long!</p>
-    const usMsgrEmptyError = error && <p className="error">Enter task title</p>
-    const isAddButtonDisabled = title.length > 15 || title.length === 0
+    const addTaskHandler = (title: string) => {
+        props.addTask(props.todoListID, title)
+    }
 
     return (
         <div>
             <h3>{props.title}<button onClick={todoListRemoveHandler}>✖️</button></h3>
-            <div>
-                <input
-                    value={title.trim()}
-                    onKeyDown={addTaskOnEnterHandler}
-                    onChange={inputOnChangeHandler}
-                    placeholder="Please, start typing..."
-                    className={error ? "input-error" : ""}
-                />
-                <button
-                    onClick={addTaskHandler}
-                    disabled={isAddButtonDisabled}
-                >+</button>
-                {usrMsgLengthTitle}
-                {usMsgrEmptyError}
-            </div>
+            <AddItemForm callback={addTaskHandler} />
             <TasksList
                 tasks={props.tasks}
                 todoListID={props.todoListID}
