@@ -1,11 +1,13 @@
 import { ChangeEvent } from "react"
 import { TaskType } from "./Todolist"
+import { EditableSpan } from "./EditableSpan"
 
 type TasksListPropsType = {
     todoListID: string
     tasks: TaskType[]
     removeTask: (todoListID: string, taskId: string) => void
     changeStatus: (todoListID: string, taskID: string, newStatus: boolean) => void
+    changeTask: (taskID: string, title: string) => void
 }
 
 
@@ -22,6 +24,11 @@ export const TasksList = (props: TasksListPropsType) => {
                         props.changeStatus(props.todoListID, task.id, e.currentTarget.checked)
                     }
                     const taskClass = task.isDone ? "task-is-done" : "task"
+
+                    const changeTaskHandler = (title: string) => {
+                        props.changeTask(task.id, title)
+                    }
+
                     return (
                         <li key={task.id} className={taskClass}>
                             <input
@@ -29,7 +36,7 @@ export const TasksList = (props: TasksListPropsType) => {
                                 checked={task.isDone}
                                 onChange={onChangeTaskStatusHandler}
                             />
-                            <span>{task.title} </span>
+                            <EditableSpan title={task.title} changeTitle={changeTaskHandler} />
                             <button onClick={onClickRemoveTaskHandler}>✖️</button>
                         </li>
                     )

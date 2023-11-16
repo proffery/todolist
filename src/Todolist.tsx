@@ -1,5 +1,6 @@
 import { AddItemForm } from "./AddItemForm"
 import { TaskFilterValueType } from "./App"
+import { EditableSpan } from "./EditableSpan"
 import { TasksList } from "./TasksList"
 
 type TodolistPropsType = {
@@ -12,6 +13,8 @@ type TodolistPropsType = {
     setFilter: (todoListID: string, value: TaskFilterValueType) => void
     changeStatus: (todoListID: string, taskID: string, newStatus: boolean) => void
     removeTodoList: (todoListID: string) => void
+    changeTask: (todoListID: string, taskID: string, taskTitle: string) => void
+    changeTodoListTitle: (todoListID: string, todoListTitle: string) => void
 }
 
 export type TaskType = {
@@ -42,15 +45,26 @@ export const Todolist = (props: TodolistPropsType) => {
         props.addTask(props.todoListID, title)
     }
 
+    const changeTaskHandler = (taskID: string, title: string) => {
+        props.changeTask(props.todoListID, taskID, title)
+    }
+
+    const changeTodoListTitleHandler = (todoListTitle: string) => {
+        props.changeTodoListTitle(props.todoListID, todoListTitle)
+    }
+
     return (
         <div>
-            <h3>{props.title}<button onClick={todoListRemoveHandler}>✖️</button></h3>
+            <h3><EditableSpan title={props.title} changeTitle={changeTodoListTitleHandler}/>
+                <button onClick={todoListRemoveHandler}>✖️</button>
+            </h3>
             <AddItemForm callback={addTaskHandler} />
             <TasksList
                 tasks={props.tasks}
                 todoListID={props.todoListID}
                 removeTask={props.removeTask}
                 changeStatus={props.changeStatus}
+                changeTask={changeTaskHandler}
             />
             <div>
                 <button className={props.filter === "all" ? "btn-filter-active" : ""} onClick={onAllClickHandler}>All</button>
