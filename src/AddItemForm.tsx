@@ -1,4 +1,8 @@
-import { ChangeEvent, KeyboardEvent, useState } from "react"
+import { ChangeEvent, KeyboardEvent, useEffect, useState } from "react"
+import Button from "@mui/material/Button"
+import styled from "styled-components"
+import TextField from "@mui/material/TextField"
+import Stack from "@mui/material/Stack"
 
 type AddItemPropsType = {
     callback: (title: string) => void
@@ -7,47 +11,85 @@ type AddItemPropsType = {
 export const AddItemForm = (props: AddItemPropsType) => {
     const [title, setTitle] = useState<string>('')
     const [error, setError] = useState<boolean>(false)
+    const [userMessage, setUserMessage] = useState<string>('')
+    const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true)
+    const TITLE_MIN_LENGTH = 1
+    const TITLE_MAX_LENGTH = 15
 
-    const usrMsgLengthTitle: boolean | JSX.Element = title.length > 15 && <p className="error">Your title too long!</p>
-    const usMsgrEmptyError = error && <p className="error">Enter task title</p>
-    const isAddButtonDisabled = title.length > 15 || title.length === 0
-    
+    useEffect(() => {
+        checkInputErrors()
+    }, [title])
+
+    useEffect(() => {
+        resetErrors()
+    }, [])
+
+    const checkInputErrors = () => {
+        if (title.length <= TITLE_MIN_LENGTH) {
+            setError(true)
+            setIsButtonDisabled(true)
+            setUserMessage('Title too short!')
+        } else if (title.length > TITLE_MAX_LENGTH) {
+            setError(true)
+            setIsButtonDisabled(true)
+            setUserMessage('Title too long!')
+        } else {
+            setError(false)
+            setIsButtonDisabled(false)
+            setUserMessage('Type text here...')
+        }
+    }
+
+    const resetErrors = () => {
+        setError(false)
+        setUserMessage('Type text here...')
+    }
+
     const addTaskOnEnterHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter' && !isAddButtonDisabled) {
+        if (e.key === 'Enter' && !error) {
             addHandler()
         }
     }
     const inputOnChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        error && setError(false)
-        if (e.target.value.trimStart()) {
-            setTitle(e.currentTarget.value)
-        }
-        else {
-            setError(true)
-            setTitle('')
-        }
+        checkInputErrors()
+        setTitle(e.currentTarget.value.trimStart())
+        resetErrors()
     }
     const addHandler = () => {
-        props.callback(title)
+        props.callback(title.trim())
         setTitle('')
+        resetErrors()
     }
 
+
     return (
-        <div>
-            <input
-                value={title.trim()}
+        <Stack direction={"row"}>
+            <TextField
+                error={error}
+                label={userMessage}
+                color={error ? "error" : "primary"}
+                size={"small"}
+                variant={"outlined"}
+                value={title.trimStart()}
                 onKeyDown={addTaskOnEnterHandler}
                 onChange={inputOnChangeHandler}
-                placeholder="Please, start typing..."
-                className={error ? "input-error" : ""}
+                onFocus={checkInputErrors}
+                onBlur={resetErrors}
             />
-            <button
+
+            <StyledButton
                 onClick={addHandler}
-                disabled={isAddButtonDisabled}
-            >+</button>
-            {usrMsgLengthTitle}
-            {usMsgrEmptyError}
-        </div>
+                disabled={isButtonDisabled}
+                variant={"contained"}
+            >+</StyledButton>
+        </Stack>
 
     )
 }
+
+const StyledButton = styled(Button)`
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+`

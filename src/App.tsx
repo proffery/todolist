@@ -1,8 +1,13 @@
+import './App.css';
 import { useState } from 'react';
 import { TaskType, Todolist } from './Todolist';
 import { v1 } from 'uuid';
-import './App.css';
 import { AddItemForm } from './AddItemForm';
+import { ButtonAppBar } from './ButtonAppBar';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import styled from 'styled-components';
 
 export type TaskFilterValueType = 'all' | 'active' | 'completed'
 
@@ -89,31 +94,48 @@ function App() {
 
     return (
         <div className="App">
-            <AddItemForm callback={addTodoList} />
-            {todoLists.map(list => {
-                let filteredTasks = tasks[list.id]
-                list.filter === 'active' && (filteredTasks = tasks[list.id].filter(task => !task.isDone))
-                list.filter === 'completed' && (filteredTasks = tasks[list.id].filter(task => task.isDone))
 
-                return (
-                    <Todolist key={list.id}
-                        todoListID={list.id}
-                        title={list.title}
-                        tasks={filteredTasks}
-                        removeTask={removeTask}
-                        filter={list.filter}
-                        setFilter={setFilter}
-                        addTask={addTask}
-                        changeStatus={changeTaskStatus}
-                        removeTodoList={removeTodoList}
-                        changeTask={changeTask}
-                        changeTodoListTitle={changeTodoListTitle}
-                    />
-                )
-            })}
+            <ButtonAppBar />
+            <Container fixed>
+                <StyledGrid container>
+                    <AddItemForm callback={addTodoList} />
+                </StyledGrid>
+                <StyledGrid container gap={4}>
+                    {todoLists.map(list => {
+                        let filteredTasks = tasks[list.id]
+                        list.filter === 'active' && (filteredTasks = tasks[list.id].filter(task => !task.isDone))
+                        list.filter === 'completed' && (filteredTasks = tasks[list.id].filter(task => task.isDone))
+                        return (
+                            <StyledPaper elevation={3}>
+                                <Todolist key={list.id}
+                                    todoListID={list.id}
+                                    title={list.title}
+                                    tasks={filteredTasks}
+                                    removeTask={removeTask}
+                                    filter={list.filter}
+                                    setFilter={setFilter}
+                                    addTask={addTask}
+                                    changeStatus={changeTaskStatus}
+                                    removeTodoList={removeTodoList}
+                                    changeTask={changeTask}
+                                    changeTodoListTitle={changeTodoListTitle}
+                                />
+                            </StyledPaper>
+                        )
+                    })}
 
+                </StyledGrid>
+            </Container>
         </div>
-    );
+    )
 }
 
 export default App;
+
+const StyledPaper = styled(Paper)`
+    padding: 15px;
+`
+
+const StyledGrid = styled(Grid)`
+    padding-top: 30px;
+`

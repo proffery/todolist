@@ -1,9 +1,9 @@
 .App {
-  padding: 30px;
-  display: flex;
+  /* padding: 30px;
+  display: flex; */
 }
 
-.App > div {
+/* .App > div {
   margin-right: 50px;
 }
 
@@ -31,4 +31,4 @@
 .input-error {
   border: 2px solid red;
   outline: none;
-}
+} */
