@@ -1,3 +1,5 @@
+import Typography from "@mui/material/Typography"
+import TextField from "@mui/material/TextField"
 import { ChangeEvent, useState } from "react"
 
 type EditableSpanPropsType = {
@@ -13,11 +15,18 @@ export const EditableSpan = (props: EditableSpanPropsType) => {
         setEdit(false)
         props.changeTitle(title)
     }
-    const onChangeTitleHandler = (e:ChangeEvent<HTMLInputElement>) => setTitle(e.currentTarget.value)
-    
+    const onChangeTitleHandler = (e: ChangeEvent<HTMLInputElement>) => setTitle(e.currentTarget.value)
+
     return (
-        edit 
-        ? <input onBlurCapture={inputHandler} type="text" value={title} onChange={onChangeTitleHandler} autoFocus/>
-        : <span onDoubleClick={spanHandler}>{props.title}</span>
+        edit
+            ? <TextField
+                size="small"
+                value={title}
+                variant="standard"
+                onBlurCapture={inputHandler}
+                onChange={onChangeTitleHandler}
+                autoFocus
+            />
+            : <Typography onDoubleClick={spanHandler}>{props.title}</Typography>
     )
 }

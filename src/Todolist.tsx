@@ -6,6 +6,8 @@ import { EditableSpan } from "./EditableSpan"
 import { TasksList } from "./TasksList"
 import Button from "@mui/material/Button"
 import Stack from "@mui/material/Stack"
+import styled from "styled-components"
+import { Typography } from "@mui/material"
 
 type TodolistPropsType = {
     todoListID: string
@@ -58,12 +60,13 @@ export const Todolist = (props: TodolistPropsType) => {
     }
 
     return (
-        <div>
-            <h3><EditableSpan title={props.title} changeTitle={changeTodoListTitleHandler} />
+        <Stack gap={1}>
+            <TodoListTitle>
+                <EditableSpan title={props.title} changeTitle={changeTodoListTitleHandler} />
                 <IconButton aria-label="delete" size="medium" onClick={todoListRemoveHandler}>
                     <DeleteIcon fontSize="inherit" />
                 </IconButton>
-            </h3>
+            </TodoListTitle>
             <AddItemForm callback={addTaskHandler} />
             <TasksList
                 tasks={props.tasks}
@@ -92,6 +95,12 @@ export const Todolist = (props: TodolistPropsType) => {
                     size="small"
                 >Completed</Button>
             </Stack>
-        </div>
+        </Stack>
     )
 }
+
+const TodoListTitle = styled.h2`
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+`

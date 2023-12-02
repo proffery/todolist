@@ -8,6 +8,7 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import styled from 'styled-components';
+import Stack from '@mui/material/Stack';
 
 export type TaskFilterValueType = 'all' | 'active' | 'completed'
 
@@ -57,11 +58,6 @@ function App() {
 
     const changeTask = (todoListID: string, taskID: string, taskTitle: string) => {
         setTasks({ ...tasks, [todoListID]: tasks[todoListID].map(task => task.id === taskID ? { ...task, title: taskTitle } : task) })
-        console.log(
-            'todoListID:' + todoListID + '\n' +
-            'taskID:' + taskID + '\n' +
-            'taskTitle:' + taskTitle
-        )
     }
 
     const changeTaskStatus = (todoListID: string, taskId: string, newStatus: boolean) => {
@@ -94,20 +90,19 @@ function App() {
 
     return (
         <div className="App">
-
             <ButtonAppBar />
-            <Container fixed>
+            <Container fixed >
                 <StyledGrid container>
                     <AddItemForm callback={addTodoList} />
                 </StyledGrid>
-                <StyledGrid container gap={4}>
+                <Stack direction={'row'} flexWrap={'wrap'} gap={4}>
                     {todoLists.map(list => {
                         let filteredTasks = tasks[list.id]
                         list.filter === 'active' && (filteredTasks = tasks[list.id].filter(task => !task.isDone))
                         list.filter === 'completed' && (filteredTasks = tasks[list.id].filter(task => task.isDone))
                         return (
-                            <StyledPaper elevation={3}>
-                                <Todolist key={list.id}
+                            <StyledPaper key={list.id} elevation={3}>
+                                <Todolist
                                     todoListID={list.id}
                                     title={list.title}
                                     tasks={filteredTasks}
@@ -123,8 +118,7 @@ function App() {
                             </StyledPaper>
                         )
                     })}
-
-                </StyledGrid>
+                </Stack>
             </Container>
         </div>
     )
@@ -134,8 +128,14 @@ export default App;
 
 const StyledPaper = styled(Paper)`
     padding: 15px;
+    height: fit-content;
+    width: 20%;
+    min-width: 230px;
 `
 
 const StyledGrid = styled(Grid)`
-    padding-top: 30px;
+    padding: 30px 0 30px 0;
+    & div {
+        width: 100%;
+    }
 `
