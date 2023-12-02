@@ -7,7 +7,6 @@ import { TasksList } from "./TasksList"
 import Button from "@mui/material/Button"
 import Stack from "@mui/material/Stack"
 import styled from "styled-components"
-import { Typography } from "@mui/material"
 
 type TodolistPropsType = {
     todoListID: string
