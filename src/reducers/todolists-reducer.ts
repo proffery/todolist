@@ -1,4 +1,4 @@
-import { TaskFilterValueType, TodolistsType } from "../App"
+import { TaskFilterValueType, TodolistsType } from "../AppWithReducer"
 
 
 type TasksReducerType = RemoveTodolistACType | SetTodolistFilterACType | AddTodolistACType | changeTodoListTitleACType

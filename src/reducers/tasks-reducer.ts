@@ -1,5 +1,5 @@
 import { v1 } from "uuid"
-import { TasksType } from "../App"
+import { TasksType } from "../AppWithReducer"
 
 type TasksReducerType = RemoveTaskACType | AddTaskACType |
     ChangeTaskACType | ChangeTaskStatusACType | AddEmtyTaskListACType | RemoveAllTasksACType

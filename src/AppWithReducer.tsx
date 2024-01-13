@@ -24,7 +24,7 @@ export type TasksType = {
     [key: string]: TaskType[]
 }
 
-function App() {
+function AppWithReducer() {
     let todoListID1 = v1()
     let todoListID2 = v1()
 
@@ -116,7 +116,7 @@ function App() {
     )
 }
 
-export default App;
+export default AppWithReducer;
 
 const StyledPaper = styled(Paper)`
     padding: 15px;

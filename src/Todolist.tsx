@@ -1,7 +1,7 @@
 import IconButton from "@mui/material/IconButton"
 import DeleteIcon from '@mui/icons-material/Delete'
 import { AddItemForm } from "./AddItemForm"
-import { TaskFilterValueType } from "./App"
+import { TaskFilterValueType } from "./AppWithReducer"
 import { EditableSpan } from "./EditableSpan"
 import { TasksList } from "./TasksList"
 import Button from "@mui/material/Button"
