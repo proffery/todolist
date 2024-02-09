@@ -1,8 +1,11 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { AddItemForm } from '../AddItemForm';
-import React, { ChangeEvent, KeyboardEvent, memo, useState } from 'react';
-import { IconButton, TextField } from "@mui/material";
+import { Meta, StoryObj } from "@storybook/react";
+import { AddItemForm } from "../AddItemForm";
+import { ChangeEvent, memo, useState } from "react";
+import TextField from "@mui/material/TextField";
+import React from "react";
+import IconButton from "@mui/material/IconButton";
 import { AddBox } from "@mui/icons-material";
+import { action } from '@storybook/addon-actions';
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta: Meta<typeof AddItemForm> = {
@@ -57,7 +60,7 @@ export const AddItemFormWithError = memo((props: AddItemFormPropsType) => {
         setTitle(e.currentTarget.value)
     }
 
-    const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+    const onKeyPressHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (error) setError(null)
         if (e.charCode === 13) {
             addItem();
@@ -80,9 +83,6 @@ export const AddItemFormWithError = memo((props: AddItemFormPropsType) => {
 })
 
 export const AddItemFormWithErrorStory: Story = {
-    render: () => <AddItemFormWithError addItem={() => action('Button clicked inside form')} />
+    render: () => <AddItemFormWithError addItem={action('Button clicked inside form')} />
 };
 
-function action(arg0: string): ((title: string) => void) | undefined {
-    throw new Error('Function not implemented.');
-}
