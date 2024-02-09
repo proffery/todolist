@@ -1,34 +1,26 @@
+/*
 .App {
-  /* padding: 30px;
-  display: flex; */
+  padding: 30px;
+  display: flex;
 }
 
-/* .App > div {
+.App > div {
   margin-right: 50px;
 }
 
 .error {
+  border: red 1px solid;
+}
+
+.error-message {
   color: red;
 }
 
-.task {
-  font-weight: bold;
+.active-filter {
+  background-color: aquamarine;
 }
 
-.task-is-done {
-  font-weight: normal;
-  text-decoration: line-through;
-  opacity: .5;
+.is-done {
+  opacity: 0.5;
 }
-
-.btn-filter-active {
-  background-color: rgb(68, 156, 156);
-  border: 2px solid rgb(68, 156, 156);
-  color: white;
-  border-radius: 3px;
-}
-
-.input-error {
-  border: 2px solid red;
-  outline: none;
-} */
+*/

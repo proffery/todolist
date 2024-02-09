@@ -1,96 +1,49 @@
-import { ChangeEvent, KeyboardEvent, useEffect, useState } from "react"
-import Button from "@mui/material/Button"
-import styled from "styled-components"
-import TextField from "@mui/material/TextField"
-import Stack from "@mui/material/Stack"
+import React, { ChangeEvent, KeyboardEvent, memo, useState } from 'react';
+import { IconButton, TextField } from "@mui/material";
+import { AddBox } from "@mui/icons-material";
 
-type AddItemPropsType = {
-    callback: (title: string) => void
+
+
+type AddItemFormPropsType = {
+    addItem: (title: string) => void
 }
 
-export const AddItemForm = (props: AddItemPropsType) => {
-    const [title, setTitle] = useState<string>('')
-    const [error, setError] = useState<boolean>(false)
-    const [userMessage, setUserMessage] = useState<string>('')
-    const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true)
-    const TITLE_MIN_LENGTH = 1
-    const TITLE_MAX_LENGTH = 15
+export const AddItemForm = memo((props: AddItemFormPropsType) => {
 
-    useEffect(() => {
-        checkInputErrors()
-    }, [title])
+    let [title, setTitle] = useState("")
+    let [error, setError] = useState<string | null>(null)
 
-    useEffect(() => {
-        resetErrors()
-    }, [])
-
-    const checkInputErrors = () => {
-        if (title.length <= TITLE_MIN_LENGTH) {
-            setError(true)
-            setIsButtonDisabled(true)
-            setUserMessage('Title too short!')
-        } else if (title.length > TITLE_MAX_LENGTH) {
-            setError(true)
-            setIsButtonDisabled(true)
-            setUserMessage('Title too long!')
+    const addItem = () => {
+        if (title.trim() !== "") {
+            props.addItem(title);
+            setTitle("");
         } else {
-            setError(false)
-            setIsButtonDisabled(false)
-            setUserMessage('Type text here...')
+            setError("Title is required");
         }
     }
 
-    const resetErrors = () => {
-        setError(false)
-        setUserMessage('Type text here...')
+    const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        setTitle(e.currentTarget.value)
     }
 
-    const addTaskOnEnterHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter' && !error) {
-            addHandler()
+    const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (error) setError(null)
+        if (e.charCode === 13) {
+            addItem();
         }
     }
-    const inputOnChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        checkInputErrors()
-        setTitle(e.currentTarget.value.trimStart())
-        resetErrors()
-    }
-    const addHandler = () => {
-        props.callback(title.trim())
-        setTitle('')
-        resetErrors()
-    }
 
-
-    return (
-        <Stack direction={"row"}>
-            <TextField
-                error={error}
-                label={userMessage}
-                color={error ? "error" : "primary"}
-                size={"small"}
-                variant={"outlined"}
-                value={title.trimStart()}
-                onKeyDown={addTaskOnEnterHandler}
-                onChange={inputOnChangeHandler}
-                onFocus={checkInputErrors}
-                onBlur={resetErrors}
-            />
-
-            <StyledButton
-                onClick={addHandler}
-                disabled={isButtonDisabled}
-                variant={"contained"}
-            >+</StyledButton>
-        </Stack>
-
-    )
-}
-
-const StyledButton = styled(Button)`
-    width: 40px;
-    height: 40px;
-    min-width: 40px;
-    min-height: 40px;
-    margin-left: 15px;
-`
+    return <div>
+        <TextField variant="outlined"
+            error={!!error}
+            value={title}
+            onChange={onChangeHandler}
+            onKeyPress={onKeyPressHandler}
+            label="Title"
+            helperText={error}
+        />
+        <IconButton color="primary" onClick={addItem}>
+            <AddBox />
+        </IconButton>+
+    </div>
+})

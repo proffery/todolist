@@ -1,32 +1,31 @@
-import Typography from "@mui/material/Typography"
-import TextField from "@mui/material/TextField"
-import { ChangeEvent, useState } from "react"
+import TextField from '@mui/material/TextField/TextField';
+import React, {ChangeEvent, memo, useState} from 'react';
+
 
 type EditableSpanPropsType = {
-    title: string
-    changeTitle: (title: string) => void
+    value: string
+    onChange: (newValue: string) => void
 }
 
-export const EditableSpan = (props: EditableSpanPropsType) => {
-    const [edit, setEdit] = useState(false)
-    const [title, setTitle] = useState(props.title)
-    const spanHandler = () => setEdit(true)
-    const inputHandler = () => {
-        setEdit(false)
-        props.changeTitle(title)
+export const EditableSpan = memo((props: EditableSpanPropsType) => {
+    console.log('EDITBLE_SPAN');
+    let [editMode, setEditMode] = useState(false);
+    let [title, setTitle] = useState(props.value);
+
+    const activateEditMode = () => {
+        setEditMode(true);
+        setTitle(props.value);
     }
-    const onChangeTitleHandler = (e: ChangeEvent<HTMLInputElement>) => setTitle(e.currentTarget.value)
+    const activateViewMode = () => {
+        setEditMode(false);
+        props.onChange(title);
+    }
+    const changeTitle = (e: ChangeEvent<HTMLInputElement>) => {
+        setTitle(e.currentTarget.value)
+    }
 
-    return (
-        edit
-            ? <TextField
-                size="small"
-                value={title}
-                variant="standard"
-                onBlurCapture={inputHandler}
-                onChange={onChangeTitleHandler}
-                autoFocus
-            />
-            : <Typography onDoubleClick={spanHandler}>{props.title}</Typography>
-    )
-}
+    return editMode
+        ?    <TextField variant="outlined"
+                        value={title} onChange={changeTitle} autoFocus onBlur={activateViewMode} />
+        : <span onDoubleClick={activateEditMode}>{props.value}</span>
+})
