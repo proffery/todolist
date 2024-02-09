@@ -15,7 +15,7 @@ export type TodolistDomainType = {
     title: string
 }
 
-type TaskDomainType = {
+export type TaskDomainType = {
     description: string
     title: string
     completed: boolean
@@ -32,7 +32,7 @@ type TaskDomainType = {
 type GetTasksResponseType = {
     items: TaskDomainType[]
     totalCount: number
-    error: string | null
+    error: string 
 }
 
 export type ResponseType<D = {}> = {

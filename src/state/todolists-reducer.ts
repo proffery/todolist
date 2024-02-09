@@ -89,6 +89,5 @@ export const setTodolistsAC = (todolists: TodolistDomainType[]) => {
 export const getTodolistsTC = () => (dispatch: Dispatch) =>
     todolistAPI.getTodolists()
         .then(res => {
-            console.log(res.data);
             dispatch(setTodolistsAC(res.data))
         })
