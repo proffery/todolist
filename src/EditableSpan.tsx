@@ -1,14 +1,13 @@
-import TextField from '@mui/material/TextField/TextField';
-import React, {ChangeEvent, memo, useState} from 'react';
-
+import React, { ChangeEvent, useState } from 'react';
+import TextField from '@mui/material/TextField';
 
 type EditableSpanPropsType = {
     value: string
     onChange: (newValue: string) => void
 }
 
-export const EditableSpan = memo((props: EditableSpanPropsType) => {
-    console.log('EDITBLE_SPAN');
+export const EditableSpan = React.memo(function (props: EditableSpanPropsType) {
+    console.log('EditableSpan called');
     let [editMode, setEditMode] = useState(false);
     let [title, setTitle] = useState(props.value);
 
@@ -25,7 +24,6 @@ export const EditableSpan = memo((props: EditableSpanPropsType) => {
     }
 
     return editMode
-        ?    <TextField variant="outlined"
-                        value={title} onChange={changeTitle} autoFocus onBlur={activateViewMode} />
+        ? <TextField value={title} onChange={changeTitle} autoFocus onBlur={activateViewMode}/>
         : <span onDoubleClick={activateEditMode}>{props.value}</span>
-})
+});
