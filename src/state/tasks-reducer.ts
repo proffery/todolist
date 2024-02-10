@@ -1,8 +1,8 @@
-import { TaskType } from '../Todolist';
 import { AddTodolistActionType, SetTodolistsType, RemoveTodolistActionType } from './todolists-reducer';
 import { TasksStateType } from '../App';
-import { TaskDomainType, todolistAPI } from '../api/todolist-api';
+import { TaskDomainType, TaskRequestType, ValueOf, todolistAPI } from '../api/todolist-api';
 import { Dispatch } from 'redux';
+import { AppRootStateType } from './store';
 
 export type RemoveTaskActionType = {
     type: 'REMOVE-TASK',
@@ -16,25 +16,15 @@ export type AddTaskActionType = {
     title: string
 }
 
-export type ChangeTaskStatusActionType = {
-    type: 'CHANGE-TASK-STATUS',
+export type ChangeTaskActionType = {
+    type: 'CHANGE-TASK',
     todolistId: string
     taskId: string
-    isDone: boolean
+    task: TaskRequestType
 }
-
-export type ChangeTaskTitleActionType = {
-    type: 'CHANGE-TASK-TITLE',
-    todolistId: string
-    taskId: string
-    title: string
-}
-
-
 
 type ActionsType = RemoveTaskActionType | AddTaskActionType
-    | ChangeTaskStatusActionType
-    | ChangeTaskTitleActionType
+    | ChangeTaskActionType
     | AddTodolistActionType
     | RemoveTodolistActionType
     | SetTodolistsType
@@ -52,57 +42,49 @@ export const tasksReducer = (state: TasksStateType = initialState, action: Actio
             return stateCopy;
         }
         case 'ADD-TASK': {
-
-            const newTask: TaskType = {
+            const newTask: TaskDomainType = {
                 id: action.task.id,
                 title: action.title,
-                isDone: action.task.completed
+                completed: action.task.completed,
+                addedDate: '',
+                deadline: '',
+                description: '',
+                order: 0,
+                priority: 0,
+                startDate: '',
+                status: 0,
+                todoListId: ''
             }
-
             return { ...state, [action.task.todoListId]: [newTask, ...state[action.task.todoListId]] };
         }
-        case 'CHANGE-TASK-STATUS': {
-            let todolistTasks = state[action.todolistId];
-            let newTasksArray = todolistTasks
-                .map(t => t.id === action.taskId ? { ...t, isDone: action.isDone } : t);
-
-            state[action.todolistId] = newTasksArray;
-            return ({ ...state });
+        case 'CHANGE-TASK': {
+            return {
+                ...state, [action.todolistId]: state[action.todolistId]
+                    .map(t => t.id === action.taskId ? { ...t, ...action.task } : t)
+            }
         }
-        case 'CHANGE-TASK-TITLE': {
-            let todolistTasks = state[action.todolistId];
-            let newTasksArray = todolistTasks
-                .map(t => t.id === action.taskId ? { ...t, title: action.title } : t);
 
-            state[action.todolistId] = newTasksArray;
-            return ({ ...state });
-        }
         case 'ADD-TODOLIST': {
             return {
                 ...state,
                 [action.todolistId]: []
             }
         }
+
         case 'REMOVE-TODOLIST': {
             const copyState = { ...state };
             delete copyState[action.id];
             return copyState;
         }
+
         case 'SET-TODOLISTS':
             return action.todolists.reduce((acc, el) => ({ ...acc, [el.id]: [] }), {})
+
         case 'SET_TASKS': {
-            const task = action.tasks.find(task => task.todoListId === action.todolistId)
-            if (task) {
-                return {
-                    ...state, [task.todoListId]: action.tasks.map(task => ({
-                        id: task.id,
-                        title: task.title,
-                        isDone: task.completed
-                    }))
-                }
-            }
-            return state
+
+            return { ...state, [action.todolistId]: [...action.tasks] }
         }
+
         default:
             return state;
     }
@@ -111,15 +93,16 @@ export const tasksReducer = (state: TasksStateType = initialState, action: Actio
 export const removeTaskAC = (taskId: string, todolistId: string): RemoveTaskActionType => {
     return { type: 'REMOVE-TASK', taskId: taskId, todolistId: todolistId }
 }
+
 export const addTaskAC = (title: string, task: TaskDomainType): AddTaskActionType => {
     return { type: 'ADD-TASK', title, task }
 }
-export const changeTaskStatusAC = (taskId: string, isDone: boolean, todolistId: string): ChangeTaskStatusActionType => {
-    return { type: 'CHANGE-TASK-STATUS', isDone, todolistId, taskId }
+
+
+export const changeTaskAC = (taskId: string, todolistId: string, task: TaskDomainType): ChangeTaskActionType => {
+    return { type: 'CHANGE-TASK', task, todolistId, taskId }
 }
-export const changeTaskTitleAC = (taskId: string, title: string, todolistId: string): ChangeTaskTitleActionType => {
-    return { type: 'CHANGE-TASK-TITLE', title, todolistId, taskId }
-}
+
 export const setTasksAC = (tasks: TaskDomainType[], todolistId: string) =>
     ({ type: 'SET_TASKS', tasks, todolistId }) as const
 
@@ -141,3 +124,26 @@ export const addTaskTC = (todolistID: string, title: string) => (dispatch: Dispa
             dispatch(addTaskAC(title, res.data.data.item))
         }
     })
+
+export const changeTaskTC = (todolistID: string, taskId: string, key: keyof TaskRequestType, value: ValueOf<TaskRequestType>) =>
+    (dispatch: Dispatch, getState: () => AppRootStateType) => {
+        const task = getState().tasks[todolistID].find(t => t.id === taskId)
+        if (task) {
+            const request: TaskRequestType = {
+                title: task.title,
+                description: task.description,
+                status: task.status,
+                priority: task.priority,
+                startDate: task.startDate,
+                deadline: task.deadline
+            }
+            todolistAPI.updateTask(todolistID, taskId, { ...request, [key]: value })
+                .then(res => {
+                    if (res.data.resultCode === 0) {
+                        dispatch(changeTaskAC(taskId, todolistID, res.data.data.item))
+                    }
+                })
+        }
+        else throw Error
+    }
+

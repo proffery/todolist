@@ -8,6 +8,8 @@ const instance = axios.create({
     },
 })
 
+export type ValueOf<T> = T[keyof T];
+
 export type TodolistDomainType = {
     id: string
     addedDate: string
@@ -20,7 +22,7 @@ export type TaskDomainType = {
     title: string
     completed: boolean
     status: number
-    priority: string
+    priority: number
     startDate: string
     deadline: string
     id: string
@@ -29,10 +31,19 @@ export type TaskDomainType = {
     addedDate: string
 }
 
+export type TaskRequestType = {
+    title: string
+    description: string
+    status: number
+    priority: number
+    startDate: string
+    deadline: string
+}
+
 type GetTasksResponseType = {
     items: TaskDomainType[]
     totalCount: number
-    error: string 
+    error: string
 }
 
 export type ResponseType<D = {}> = {
@@ -42,40 +53,43 @@ export type ResponseType<D = {}> = {
     data: D
 }
 
-
 export const todolistAPI = {
     getTodolists() {
         return instance.get<TodolistDomainType[]>('/todo-lists')
     },
+
     updateTodolist(todolistId: string, title: string) {
         return instance.put<ResponseType>(`/todo-lists/${todolistId}`,
             { title: title }
         )
     },
+
     createTodolist(title: string) {
         return instance.post<ResponseType<{ item: TodolistDomainType }>>('/todo-lists',
             { title: title }
         )
     },
+
     deleteTodolist(todolistId: string) {
         return instance.delete<ResponseType>(`/todo-lists/${todolistId}`)
     },
 
-
-
     getTasks(todolistId: string) {
         return instance.get<GetTasksResponseType>(`/todo-lists/${todolistId}/tasks`)
     },
+
     createTask(todolistId: string, title: string) {
         return instance.post<ResponseType<{ item: TaskDomainType }>>(`/todo-lists/${todolistId}/tasks`,
             { title: title }
         )
     },
-    updateTask(todolistId: string, taskId: string, title: string) {
+
+    updateTask(todolistId: string, taskId: string, requestTask: TaskRequestType) {
         return instance.put<ResponseType<{ item: TaskDomainType }>>(`/todo-lists/${todolistId}/tasks/${taskId}`,
-            { title: title }
+            { ...requestTask }
         )
     },
+
     deleteTask(todolistId: string, taskId: string) {
         return instance.delete<ResponseType>(`/todo-lists/${todolistId}/tasks/${taskId}`)
     },
