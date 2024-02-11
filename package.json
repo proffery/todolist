@@ -1,6 +1,6 @@
 {
-  "name": "todolist",
-  "homepage": "http://proffery.github.io/todolist",
+  "name": "todo13v3",
+  "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@emotion/react": "11.10.5",
@@ -16,7 +16,6 @@
     "@types/react-dom": "18.0.7",
     "@types/react-redux": "7.1.24",
     "@types/uuid": "8.3.4",
-    "gh-pages": "^6.1.0",
     "axios": "^1.6.7",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -34,9 +33,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 9009 -s public",
-    "build-storybook": "build-storybook -s public",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "build-storybook": "build-storybook -s public"
   },
   "eslintConfig": {
     "extends": [
