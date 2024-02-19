@@ -21,6 +21,7 @@ export const TodolistsList: React.FC = () => {
 
     const todolists = useAppSelector<Array<TodolistDomainType>>(state => state.todolists)
     const tasks = useAppSelector<TasksStateType>(state => state.tasks)
+    const appStatus = useAppSelector(state=> state.app.status)
 
     const dispatch = useAppDispatch()
 
@@ -72,7 +73,7 @@ export const TodolistsList: React.FC = () => {
 
     return <>
         <Grid container style={{padding: '20px'}}>
-            <AddItemForm addItem={addTodolist}/>
+            <AddItemForm addItem={addTodolist} disabled={appStatus === 'loading'} />
         </Grid>
         <Grid container spacing={3}>
             {
@@ -93,6 +94,7 @@ export const TodolistsList: React.FC = () => {
                                 removeTodolist={removeTodolist}
                                 changeTaskTitle={changeTaskTitle}
                                 changeTodolistTitle={changeTodolistTitle}
+                                entityStatus={tl.entityStatus}
                             />
                         </Paper>
                     </Grid>
