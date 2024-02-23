@@ -8,6 +8,9 @@ import FormLabel from '@mui/material/FormLabel';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useFormik } from 'formik';
+import { useAppDispatch, useAppSelector } from '../../app/store';
+import { loginTC } from './auth-reducer';
+import { Navigate } from 'react-router-dom';
 
 type FormikErrorType = {
     email?: string
@@ -15,7 +18,8 @@ type FormikErrorType = {
 }
 
 export const Login = () => {
-
+    const dispatch = useAppDispatch()
+    const isLoggedIn = useAppSelector(state => state.auth.isLoggedIn)
     const formik = useFormik({
         initialValues: {
             email: '',
@@ -23,7 +27,7 @@ export const Login = () => {
             rememberMe: false
         },
         onSubmit: values => {
-            console.log(JSON.stringify(values));
+            dispatch(loginTC(values))
         },
         validate: (values) => {
             const errors: FormikErrorType = {}
@@ -42,6 +46,9 @@ export const Login = () => {
             return errors
         },
     })
+
+    if (isLoggedIn) return <Navigate to={'/'} />
+
     return <Grid container justifyContent={'center'}>
         <Grid item justifyContent={'center'}>
             <FormControl>
@@ -62,7 +69,7 @@ export const Login = () => {
                             type="email"
                             label="Email"
                             margin="normal"
-                            {... formik.getFieldProps('email')}
+                            {...formik.getFieldProps('email')}
                             error={!!formik.errors.email && formik.touched.password}
                             helperText={formik.errors.email}
                             autoComplete={'off'}
@@ -72,7 +79,7 @@ export const Login = () => {
                             type="password"
                             label="Password"
                             margin="normal"
-                            {... formik.getFieldProps('password')}
+                            {...formik.getFieldProps('password')}
                             error={!!formik.errors.password && formik.touched.password}
                             helperText={formik.errors.password}
                             autoComplete={'off'}
@@ -80,7 +87,7 @@ export const Login = () => {
                         <FormControlLabel
                             label={'Remember me'}
                             control={<Checkbox
-                                {... formik.getFieldProps('rememberMe')}
+                                {...formik.getFieldProps('rememberMe')}
                             />} />
                         <Button type={'submit'} variant={'contained'} color={'primary'}>
                             Login
