@@ -1,23 +1,22 @@
-import {tasksReducer} from '../features/TodolistsList/tasks-reducer';
-import {todolistsReducer} from '../features/TodolistsList/todolists-reducer';
-import {applyMiddleware, combineReducers, createStore} from 'redux'
-import thunkMiddleware, {ThunkAction, ThunkDispatch} from 'redux-thunk'
-import {appReducer} from './app-reducer'
-import {authReducer} from '../features/Login/auth-reducer'
-import {configureStore, UnknownAction} from "@reduxjs/toolkit";
+import { UnknownAction, configureStore } from "@reduxjs/toolkit"
+import { tasksReducer } from 'features/TodolistsList/tasksSlice'
+import { combineReducers } from "redux"
+import { ThunkAction, ThunkDispatch } from "redux-thunk"
+import { authReducer } from "../features/Login/authSlice"
+import { todolistsReducer } from "../features/TodolistsList/todolistsSlice"
+import { appReducer } from "./app-reducer"
 
 const rootReducer = combineReducers({
 	tasks: tasksReducer,
 	todolists: todolistsReducer,
 	app: appReducer,
-	auth: authReducer
+	auth: authReducer,
 })
 
-// ❗старая запись, с новыми версиями не работает
-//  const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
-export const store = configureStore({reducer: rootReducer},)
 
-export type AppRootStateType = ReturnType<typeof rootReducer>
+export const store = configureStore({ reducer: rootReducer })
+
+export type AppRootStateType = ReturnType<typeof store.getState>
 
 // ❗ UnknownAction вместо AnyAction
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, AppRootStateType, unknown, UnknownAction>
