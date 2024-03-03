@@ -38,6 +38,9 @@ const slice = createSlice({
       .addCase(todolistsActions.setTodolists, (state, action) => {
         action.payload.todolists.forEach(tl => state[tl.id] = [])
       })
+      .addCase('otrher/clear-slices', () => {
+        return {}
+      })
   }
 })
 

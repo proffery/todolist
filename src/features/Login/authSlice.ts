@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Dispatch } from "redux"
 import { handleServerAppError, handleServerNetworkError } from "../../utils/error-utils"
 import { appActions } from 'app/app-reducer'
@@ -19,7 +19,8 @@ const slice = createSlice({
 
 export const authReducer = slice.reducer
 export const authActions = slice.actions
-
+//Other Actions
+export const clearSlices = createAction('otrher/clear-slices')
 // thunks
 export const loginTC =
   (data: LoginParamsType) => (dispatch: Dispatch) => {
@@ -46,6 +47,8 @@ export const logoutTC = () => (dispatch: Dispatch) => {
       if (res.data.resultCode === 0) {
         dispatch(authActions.setIsLoggedIn({ isLoggedIn: false }))
         dispatch(appActions.setAppStatus({ status: "succeeded" }))
+        dispatch(clearSlices())
+
       } else {
         handleServerAppError(res.data, dispatch)
       }

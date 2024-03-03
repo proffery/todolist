@@ -31,7 +31,12 @@ const slice = createSlice({
     setTodolists: (state, action: PayloadAction<{ todolists: TodolistType[] }>) => {
       action.payload.todolists.forEach(tl => (state.push({ ...tl, filter: 'all', entityStatus: 'idle' })))
     }
-  }
+  },
+  extraReducers(builder) {
+    builder.addCase('otrher/clear-slices', () => {
+      return []
+    })
+  },
 })
 
 export const todolistsReducer = slice.reducer
