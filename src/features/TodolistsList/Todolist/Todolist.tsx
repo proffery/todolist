@@ -7,7 +7,7 @@ import { FilterValuesType, TodolistDomainType } from "features/TodolistsList/tod
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { Button, IconButton } from "@mui/material";
 import { Delete } from "@mui/icons-material";
-import { fetchTasks } from 'features/TodolistsList/tasks.reducer'
+import { tasksThunks } from 'features/TodolistsList/tasks.reducer'
 
 type PropsType = {
   todolist: TodolistDomainType;
@@ -29,7 +29,7 @@ export const Todolist = React.memo(function ({ demo = false, ...props }: PropsTy
     if (demo) {
       return;
     }
-    const thunk = fetchTasks(props.todolist.id);
+    const thunk = tasksThunks.fetchTasks(props.todolist.id);
     dispatch(thunk);
   }, []);
 
