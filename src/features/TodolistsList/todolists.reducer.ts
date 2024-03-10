@@ -40,7 +40,7 @@ const slice = createSlice({
         state.unshift(newTodolist)
       })
       .addCase(changeTodolistTitle.fulfilled, (state, action) => {
-        const todo = state.find((todo) => todo.id === action.payload.id)
+        const todo = state.find((todo) => todo.id === action.payload.todolistId)
         if (todo) {
           todo.title = action.payload.title
         }
@@ -98,14 +98,14 @@ export const addTodolist = createAppAsyncThunk<{ todolist: TodolistType }, strin
     }
   })
 
-export const changeTodolistTitle = createAppAsyncThunk<{ id: string, title: string }, { id: string, title: string }>
+export const changeTodolistTitle = createAppAsyncThunk<{ todolistId: string, title: string }, { todolistId: string, title: string }>
   (`${slice.name}/changeTodolistTitle`, (arg, thunkAPI) => {
     const { dispatch, rejectWithValue } = thunkAPI
     try {
       dispatch(appActions.setAppStatus({ status: "loading" }))
-      todolistsAPI.updateTodolist(arg.id, arg.title)
+      todolistsAPI.updateTodolist(arg)
       dispatch(appActions.setAppStatus({ status: "succeeded" }))
-      return { id: arg.id, title: arg.title }
+      return { todolistId: arg.todolistId, title: arg.title }
     } catch (error) {
       handleServerNetworkError(error, dispatch)
       return rejectWithValue(null)

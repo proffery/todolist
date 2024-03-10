@@ -65,7 +65,7 @@ test("correct todolist should change its name", () => {
   const action: ChangeTodolistTitle = {
     type: todolistsThunks.changeTodolistTitle.fulfilled.type,
     payload: {
-      id: todolistId2,
+      todolistId: todolistId2,
       title: newTodolistTitle
     }
   }

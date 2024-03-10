@@ -26,15 +26,15 @@ export const todolistsAPI = {
     const promise = instance.delete<ResponseType>(`todo-lists/${id}`)
     return promise
   },
-  updateTodolist(id: string, title: string) {
-    const promise = instance.put<ResponseType>(`todo-lists/${id}`, { title: title })
+  updateTodolist(arg: UpdateTodolistsArgs) {
+    const promise = instance.put<ResponseType>(`todo-lists/${arg.todolistId}`, { title: arg.title })
     return promise
   },
   getTasks(todolistId: string) {
     return instance.get<GetTasksResponse>(`todo-lists/${todolistId}/tasks`)
   },
-  deleteTask(todolistId: string, taskId: string) {
-    return instance.delete<ResponseType>(`todo-lists/${todolistId}/tasks/${taskId}`)
+  deleteTask(arg: DeleteTaskArgs) {
+    return instance.delete<ResponseType>(`todo-lists/${arg.todolistId}/tasks/${arg.taskId}`)
   },
   createTask(arg: AddTaskArgs) {
     return instance.post<ResponseType<{ item: TaskType }>>(`todo-lists/${arg.todolistId}/tasks`, { title: arg.title })
@@ -131,4 +131,14 @@ export type UpdateTaskArgs = {
   todolistId: string,
   taskId: string,
   domainModel: UpdateDomainTaskModelType
+}
+
+export type DeleteTaskArgs = {
+  todolistId: string,
+  taskId: string
+}
+
+export type UpdateTodolistsArgs = {
+  todolistId: string,
+  title: string
 }

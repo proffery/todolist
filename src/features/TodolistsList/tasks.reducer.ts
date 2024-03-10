@@ -78,7 +78,7 @@ export const removeTask = createAppAsyncThunk<{
     const { dispatch, rejectWithValue } = thunkAPI
     try {
       dispatch(appActions.setAppStatus({ status: 'loading' }))
-      const res = await todolistsAPI.deleteTask(arg.todolistId, arg.taskId)
+      const res = await todolistsAPI.deleteTask(arg)
       if (res.data.resultCode === ResultCode.success) {
         dispatch(appActions.setAppStatus({ status: 'succeeded' }))
         return { todolistId: arg.todolistId, taskId: arg.taskId }
