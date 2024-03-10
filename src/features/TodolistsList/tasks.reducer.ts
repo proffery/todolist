@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { ResultCode, TaskPriorities, TaskStatuses, TaskType, todolistsAPI, UpdateTaskModelType } from "api/todolists-api"
+import { AddTaskArgs, ResultCode, TaskPriorities, TaskStatuses, TaskType, todolistsAPI, UpdateTaskArgs, UpdateTaskModelType } from "api/todolists-api"
 import { appActions } from "app/app.reducer"
 import { clearTasksAndTodolists } from "common/actions/common.actions"
 import { todolistsActions } from "features/TodolistsList/todolists.reducer"
@@ -90,12 +90,12 @@ export const removeTask = createAppAsyncThunk<{
     }
   })
 
-export const addTask = createAppAsyncThunk<{ task: TaskType }, { title: string, todolistId: string }>
+export const addTask = createAppAsyncThunk<{ task: TaskType }, AddTaskArgs>
   (`${slice.name}/addTask`, async (arg, thunkAPI) => {
     const { dispatch, rejectWithValue } = thunkAPI
     try {
       dispatch(appActions.setAppStatus({ status: "loading" }))
-      const res = await todolistsAPI.createTask(arg.todolistId, arg.title)
+      const res = await todolistsAPI.createTask(arg)
       if (res.data.resultCode === ResultCode.success) {
         dispatch(appActions.setAppStatus({ status: "succeeded" }))
         const task = res.data.data.item
@@ -110,11 +110,11 @@ export const addTask = createAppAsyncThunk<{ task: TaskType }, { title: string, 
     }
   })
 
-export const updateTask = createAppAsyncThunk<{ taskId: string, domainModel: UpdateDomainTaskModelType, todolistId: string },
-  { taskId: string, domainModel: UpdateDomainTaskModelType, todolistId: string }>
+export const updateTask = createAppAsyncThunk<UpdateTaskArgs, UpdateTaskArgs>
   (`${slice.name}/updateTask`, async (arg, thunkAPI) => {
     const { dispatch, rejectWithValue, getState } = thunkAPI
     try {
+      dispatch(appActions.setAppStatus({ status: "loading" }))
       const task = getState().tasks[arg.todolistId].find((t) => t.id === arg.taskId)
       if (!task) {
         console.warn("task not found in the state")
@@ -129,8 +129,9 @@ export const updateTask = createAppAsyncThunk<{ taskId: string, domainModel: Upd
         status: task.status,
         ...arg.domainModel,
       }
-      const res = await todolistsAPI.updateTask(arg.todolistId, arg.taskId, apiModel)
+      const res = await todolistsAPI.updateTask({ todolistId: arg.todolistId, taskId: arg.taskId, domainModel: apiModel })
       if (res.data.resultCode === ResultCode.success) {
+        dispatch(appActions.setAppStatus({ status: "succeeded" }))
         return arg
       }
       else {
