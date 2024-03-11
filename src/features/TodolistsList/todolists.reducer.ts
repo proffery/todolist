@@ -25,9 +25,10 @@ const slice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(clearTasksAndTodolists, () => {
-      return []
-    })
+    builder
+      .addCase(clearTasksAndTodolists, () => {
+        return []
+      })
       .addCase(fetchTodolists.fulfilled, (state, action) => {
         return action.payload.todolists.map((tl) => ({ ...tl, filter: "all", entityStatus: "idle" }))
       })

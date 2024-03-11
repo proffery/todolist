@@ -1,12 +1,4 @@
-import React, { useCallback, useEffect } from "react";
-import "./App.css";
-import { TodolistsList } from "features/TodolistsList/TodolistsList";
-import { ErrorSnackbar } from "components/ErrorSnackbar/ErrorSnackbar";
-import { useSelector } from "react-redux";
-import { initializeAppTC } from "app/app.reducer";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Login } from "features/auth/Login";
-import { logoutTC } from "features/auth/auth.reducer";
+import { Menu } from "@mui/icons-material"
 import {
   AppBar,
   Button,
@@ -16,37 +8,45 @@ import {
   LinearProgress,
   Toolbar,
   Typography,
-} from "@mui/material";
-import { Menu } from "@mui/icons-material";
-import { useAppDispatch } from "hooks/useAppDispatch";
-import { selectIsLoggedIn } from "features/auth/auth.selectors";
-import { selectAppStatus, selectIsInitialized } from "app/app.selectors";
+} from "@mui/material"
+import { appThunks } from 'app/app.reducer'
+import { selectAppStatus, selectIsInitialized } from "app/app.selectors"
+import { ErrorSnackbar } from "components/ErrorSnackbar/ErrorSnackbar"
+import { TodolistsList } from "features/TodolistsList/TodolistsList"
+import { Login } from "features/auth/Login"
+import { authThunk } from 'features/auth/auth.reducer'
+import { selectIsLoggedIn } from "features/auth/auth.selectors"
+import { useAppDispatch } from "hooks/useAppDispatch"
+import React, { useCallback, useEffect } from "react"
+import { useSelector } from "react-redux"
+import { BrowserRouter, Route, Routes } from "react-router-dom"
+import "./App.css"
 
 type PropsType = {
-  demo?: boolean;
-};
+  demo?: boolean
+}
 
 function App({ demo = false }: PropsType) {
-  const status = useSelector(selectAppStatus);
-  const isInitialized = useSelector(selectIsInitialized);
-  const isLoggedIn = useSelector(selectIsLoggedIn);
+  const status = useSelector(selectAppStatus)
+  const isInitialized = useSelector(selectIsInitialized)
+  const isLoggedIn = useSelector(selectIsLoggedIn)
 
-  const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
-    dispatch(initializeAppTC());
-  }, []);
+    dispatch(appThunks.initializeApp())
+  }, [])
 
   const logoutHandler = useCallback(() => {
-    dispatch(logoutTC());
-  }, []);
+    dispatch(authThunk.logout())
+  }, [])
 
   if (!isInitialized) {
     return (
       <div style={{ position: "fixed", top: "30%", textAlign: "center", width: "100%" }}>
         <CircularProgress />
       </div>
-    );
+    )
   }
 
   return (
@@ -75,7 +75,7 @@ function App({ demo = false }: PropsType) {
         </Container>
       </div>
     </BrowserRouter>
-  );
+  )
 }
 
-export default App;
+export default App
