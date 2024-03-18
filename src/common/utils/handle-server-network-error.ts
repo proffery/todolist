@@ -1,7 +1,11 @@
 import { Dispatch } from "redux";
 import axios, { AxiosError } from "axios";
 import { appActions } from "app/app.reducer";
-
+/**
+ * Данная функция обрабатывает глобальные ошибки приложения или сети.
+ * @param e - глобальная ошибка
+ * @param dispatch - функция для отправки сообщений в store Redux
+ */
 export const handleServerNetworkError = (e: unknown, dispatch: Dispatch) => {
   const err = e as Error | AxiosError<{ error: string }>;
   if (axios.isAxiosError(err)) {

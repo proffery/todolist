@@ -1,42 +1,53 @@
-import React from "react";
-import { useFormik } from "formik";
-import { useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
-import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, TextField } from "@mui/material";
-import { useAppDispatch } from "common/hooks";
-import { selectIsLoggedIn } from "features/auth/auth.selectors";
-import { authThunks } from "features/auth/auth.reducer";
+import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, TextField } from "@mui/material"
+import { useActions } from 'common/hooks/useActions'
+import { BaseResponseType } from 'common/types/common.types'
+import { selectIsLoggedIn } from "features/auth/auth.selectors"
+import { useFormik } from "formik"
+import React from "react"
+import { useSelector } from "react-redux"
+import { Navigate } from "react-router-dom"
 
 export const Login = () => {
-  const dispatch = useAppDispatch();
-
-  const isLoggedIn = useSelector(selectIsLoggedIn);
-
+  const { login } = useActions()
+  const isLoggedIn = useSelector(selectIsLoggedIn)
+  type FormikErrorType = {
+    email?: string
+    password?: string
+  }
   const formik = useFormik({
-    validate: (values) => {
-      if (!values.email) {
-        return {
-          email: "Email is required",
-        };
-      }
-      if (!values.password) {
-        return {
-          password: "Password is required",
-        };
-      }
-    },
     initialValues: {
       email: "",
       password: "",
       rememberMe: false,
     },
-    onSubmit: (values) => {
-      dispatch(authThunks.login(values));
+    validate: (values) => {
+      const errors: FormikErrorType = {}
+      if (!values.email) {
+        errors.email = 'Required'
+      } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+        errors.email = 'Invalid email address'
+      }
+      if (!values.password) {
+        errors.password = 'Required'
+      } else if (values.password.length < 4) {
+        errors.password = 'Password must be longer than 3'
+      }
+      return errors
     },
-  });
+    onSubmit: (values, fomikHelpers) => {
+      login(values)
+        .unwrap()
+        .then((res) => {
+          console.log(res)
+        })
+        .catch((res: BaseResponseType) => {
+          res.fieldsErrors?.forEach(err => fomikHelpers.setFieldError(err.field, err.error))
+        })
+    },
+  })
 
   if (isLoggedIn) {
-    return <Navigate to={"/"} />;
+    return <Navigate to={"/"} />
   }
 
   return (
@@ -57,9 +68,9 @@ export const Login = () => {
             </FormLabel>
             <FormGroup>
               <TextField label="Email" margin="normal" {...formik.getFieldProps("email")} />
-              {formik.errors.email ? <div>{formik.errors.email}</div> : null}
+              {formik.errors.email ? <div style={{ color: 'red' }}>{formik.errors.email}</div> : null}
               <TextField type="password" label="Password" margin="normal" {...formik.getFieldProps("password")} />
-              {formik.errors.password ? <div>{formik.errors.password}</div> : null}
+              {formik.errors.password ? <div style={{ color: 'red' }}>{formik.errors.password}</div> : null}
               <FormControlLabel
                 label={"Remember me"}
                 control={<Checkbox {...formik.getFieldProps("rememberMe")} checked={formik.values.rememberMe} />}
@@ -72,5 +83,5 @@ export const Login = () => {
         </form>
       </Grid>
     </Grid>
-  );
-};
+  )
+}
