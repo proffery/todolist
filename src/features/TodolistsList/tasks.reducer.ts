@@ -1,6 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { appActions } from "app/app.reducer"
-import { todolistsThunks } from "features/TodolistsList/todolists.reducer"
+import { clearTasksAndTodolists } from "common/actions"
+import { ResultCode, TaskPriorities, TaskStatuses } from "common/enums"
+import { createAppAsyncThunk, handleServerAppError } from "common/utils"
+import { thunkTryCatch } from 'common/utils/thunk-try-catch'
 import {
   AddTaskArgType,
   RemoveTaskArgType,
@@ -9,10 +12,7 @@ import {
   UpdateTaskArgType,
   UpdateTaskModelType,
 } from "features/TodolistsList/todolists.api"
-import { createAppAsyncThunk, handleServerAppError, handleServerNetworkError } from "common/utils"
-import { ResultCode, TaskPriorities, TaskStatuses } from "common/enums"
-import { clearTasksAndTodolists } from "common/actions"
-import { thunkTryCatch } from 'common/utils/thunk-try-catch'
+import { todolistsThunks } from "features/TodolistsList/todolists.reducer"
 
 const initialState: TasksStateType = {}
 
